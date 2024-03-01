@@ -1,0 +1,56 @@
+version: "3"
+
+services:
+
+unbound:
+    image: mvance/unbound:latest
+    container_name: unbound
+    hostname: unbound
+    restart: unless-stopped
+    volumes: ./unbound:/opt/unbound/etc/unbound/
+    networks:
+      private_network:
+        ipv4_address: 10.10.0.200
+    cap_add:
+      - NET_ADMIN
+    env_file: .env
+
+openvpn:
+    depends_on:
+      - unbound
+      - pihole
+    image: kylemanna/openvpn:latest
+    container_name: openvpn
+    ports:
+      - 1194:1194/udp
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - OVPN_DATA=${OVPN_DATA}
+      - NUM_CLIENTS=${NUM_CLIENTS}
+    cap_add:
+      - NET_ADMIN
+    command: sh -c 'for i in $(seq 1 ${NUM_CLIENTS}); do easyrsa build-client-full client$i nopass; done'
+    volumes: '${OVPN_DATA}:/etc/openvpn'
+    
+    
+    
+pihole:
+    depends_on:
+      - unbound
+    container_name: pihole
+    image: pihole/pihole:latest
+    restart: unless-stopped
+    hostname: pihole
+    dns:
+      - 127.0.0.1
+      - ${PIHOLE_DNS}
+    volumes:
+      - './etc-pihole:/etc/pihole'
+      - './etc-dnsmasq.d:/etc/dnsmasq.d'
+    networks:
+      private_network:
+        ipv4_address: 10.10.0.200
+    cap_add:
+      - NET_ADMIN
+    env_file: .env
