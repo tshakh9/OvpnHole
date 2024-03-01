@@ -36,8 +36,12 @@ services:
       - OVPNDNS=${OVPNDNS}
     cap_add:
       - NET_ADMIN
-    command:
-      - bash -c "for i in $(seq 1 ${NUM_CLIENTS}); do easyrsa build-client-full client$i nopass; done"
+    command: >
+      bash -c "
+        for i in $(seq 1 ${NUM_CLIENTS}); do
+          easyrsa build-client-full client$i nopass
+          ovpn_getclient client$i > client$i.ovpn
+        done"
     volumes:
       - "${OVPN_DATA}:/etc/openvpn"
 
