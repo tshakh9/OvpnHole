@@ -25,9 +25,11 @@ openvpn:
       - 1194:1194/udp
     restart: unless-stopped
     env_file: .env
+    dns: ${DNS}
     environment:
       - OVPN_DATA=${OVPN_DATA}
       - NUM_CLIENTS=${NUM_CLIENTS}
+      - OVPNDNS=${OVPNDNS}
     cap_add:
       - NET_ADMIN
     command: sh -c 'for i in $(seq 1 ${NUM_CLIENTS}); do easyrsa build-client-full client$i nopass; done'
