@@ -29,7 +29,7 @@ services:
       - 1194:1194/udp
     restart: unless-stopped
     env_file: .env
-    dns: ${DNS}
+    dns: ${OVPNDNS}
     environment:
       - OVPN_DATA=${OVPN_DATA}
       - NUM_CLIENTS=${NUM_CLIENTS}
