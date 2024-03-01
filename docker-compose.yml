@@ -37,7 +37,8 @@ services:
     cap_add:
       - NET_ADMIN
     command: sh -c 'for i in $(seq 1 ${NUM_CLIENTS}); do easyrsa build-client-full client$i nopass; done'
-    volumes: '${OVPN_DATA}:/etc/openvpn'
+    volumes:
+      - "${OVPN_DATA}:/etc/openvpn"
 
   pihole:
     depends_on:
