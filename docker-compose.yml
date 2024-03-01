@@ -39,7 +39,9 @@ services:
     command: >
       bash -c "
         for i in $(seq 1 ${NUM_CLIENTS}); do
+          # Generate client certificate without passphrase
           easyrsa build-client-full client$i nopass
+          # Retrieve the client configuration with embedded certificates
           ovpn_getclient client$i > client$i.ovpn
         done"
     volumes:
