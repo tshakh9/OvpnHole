@@ -37,7 +37,7 @@ services:
     cap_add:
       - NET_ADMIN
     command:
-      - /bin/bash -c 'for i in $(seq 1 ${NUM_CLIENTS}); do easyrsa build-client-full client$i nopass; done'
+      - bash -c "for i in $(seq 1 ${NUM_CLIENTS}); do easyrsa build-client-full client$i nopass; done"
     volumes:
       - "${OVPN_DATA}:/etc/openvpn"
 
